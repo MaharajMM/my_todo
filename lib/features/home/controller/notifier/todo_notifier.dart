@@ -26,12 +26,25 @@ class TodoNotifier extends StateNotifier<List<TodoModel>> {
   }
 
   Future<void> toggleTodo(String id) async {
-    final updatedTodos = state.map((todo) {
-      if (todo.id == id) {
-        return todo.copyWith(isCompleted: !todo.isCompleted);
-      }
-      return todo;
-    }).toList();
+    // Find the todo that's being toggled
+    final todoToToggle = state.firstWhere((todo) => todo.id == id);
+    final isBeingCompleted = !todoToToggle.isCompleted;
+
+    // Remove the todo from the current list
+    final remainingTodos = state.where((todo) => todo.id != id).toList();
+
+    // Create the updated todo with toggled status
+    final updatedTodo = todoToToggle.copyWith(isCompleted: !todoToToggle.isCompleted);
+
+    List<TodoModel> updatedTodos;
+
+    if (isBeingCompleted) {
+      // If the todo is being completed, add it to the end (bottom)
+      updatedTodos = [...remainingTodos, updatedTodo];
+    } else {
+      // If the todo is being marked as incomplete, add it to the beginning (top)
+      updatedTodos = [updatedTodo, ...remainingTodos];
+    }
 
     state = updatedTodos;
     await _dbService.saveTodos(updatedTodos);
