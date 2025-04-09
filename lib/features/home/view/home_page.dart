@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_todo/features/home/controller/todo_provider.dart';
 import 'package:my_todo/features/home/view/widgets/todo_list.dart';
 
 @RoutePage()
@@ -23,13 +24,15 @@ class HomeView extends ConsumerStatefulWidget {
 class _HomeViewState extends ConsumerState<HomeView> {
   @override
   Widget build(BuildContext context) {
+    final todos = ref.watch(todoProvider);
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Todo App'),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
-      body: TodoList(todos: []),
+      body: TodoList(todos: todos),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddTodoDialog(context, ref),
         child: const Icon(Icons.add),
@@ -102,6 +105,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   void _addTodo(BuildContext context, String title) {
     final trimmedTitle = title.trim();
     if (trimmedTitle.isNotEmpty) {
+      ref.read(todoProvider.notifier).addTodo(trimmedTitle);
       Navigator.pop(context);
     }
   }

@@ -12,13 +12,13 @@ class TodoModel {
   });
 
   TodoModel copyWith({
-    required String id,
-    required String title,
+    String? id,
+    String? title,
     bool isCompleted = false,
   }) =>
       TodoModel(
-        id: id ,
-        title: title ,
+        id: id ?? this.id,
+        title: title ?? this.title,
         isCompleted: isCompleted,
       );
 

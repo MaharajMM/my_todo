@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_todo/features/home/controller/todo_provider.dart';
 
 class AddTodoForm extends ConsumerStatefulWidget {
   const AddTodoForm({super.key});
@@ -20,7 +21,7 @@ class _AddTodoFormState extends ConsumerState<AddTodoForm> {
   void _addTodo() {
     final title = _controller.text.trim();
     if (title.isNotEmpty) {
-      // ref.read(todoProvider.notifier).addTodo(title);
+      ref.read(todoProvider.notifier).addTodo(title);
       _controller.clear();
     }
   }

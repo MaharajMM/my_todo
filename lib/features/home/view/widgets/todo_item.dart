@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_todo/const/colors/app_colors.dart';
 import 'package:my_todo/data/model/todo_model.dart';
+import 'package:my_todo/features/home/controller/todo_provider.dart';
 
 class TodoItem extends ConsumerWidget {
   final TodoModel todo;
@@ -25,6 +27,7 @@ class TodoItem extends ConsumerWidget {
       ),
       direction: DismissDirection.endToStart,
       onDismissed: (_) {
+        ref.read(todoProvider.notifier).deleteTodo(todo.id);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${todo.title} deleted'),
@@ -32,13 +35,24 @@ class TodoItem extends ConsumerWidget {
           ),
         );
       },
-      child: Card(
-        elevation: 2,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.appWhite,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.grey900.withValues(alpha: 0.05),
+              blurRadius: 5,
+              offset: const Offset(2, 16),
+            ),
+          ],
+        ),
         margin: const EdgeInsets.only(bottom: 16),
         child: ListTile(
           leading: Checkbox(
             value: todo.isCompleted,
             onChanged: (_) {
+              ref.read(todoProvider.notifier).toggleTodo(todo.id);
             },
           ),
           title: Text(
@@ -52,6 +66,7 @@ class TodoItem extends ConsumerWidget {
           trailing: IconButton(
             icon: const Icon(Icons.delete_outline),
             onPressed: () {
+              ref.read(todoProvider.notifier).deleteTodo(todo.id);
             },
           ),
         ),
